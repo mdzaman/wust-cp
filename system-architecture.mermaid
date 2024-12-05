@@ -1,0 +1,83 @@
+graph TB
+    subgraph Client["Client Layer"]
+        WA[Web App - React]
+        MA[Mobile App - Flutter]
+    end
+
+    subgraph API["API Layer"]
+        AG[API Gateway]
+        COGN[Cognito Auth]
+    end
+
+    subgraph Services["Microservices Layer (Lambda)"]
+        PROF[Profile Service]
+        SKILL[Skills Assessment]
+        PATH[Career Pathways]
+        ANAL[Analytics Service]
+        PERS[Personality Analysis]
+        GOAL[Goal Tracking]
+        REC[Recommendation Engine]
+        GAME[Gamification Service]
+    end
+
+    subgraph Queue["Message Queue"]
+        SQS[Amazon SQS]
+        SNS[Amazon SNS]
+    end
+
+    subgraph Storage["Data Layer"]
+        DDB[(DynamoDB)]
+        RDS[(Amazon RDS)]
+        NEP[(Neptune Graph DB)]
+        S3[S3 Storage]
+        ES[OpenSearch]
+    end
+
+    subgraph Analytics["Analytics Layer"]
+        SAGE[SageMaker]
+        QUICK[QuickSight]
+        ATH[Athena]
+    end
+
+    subgraph Monitor["Monitoring & Logging"]
+        CW[CloudWatch]
+        CT[CloudTrail]
+    end
+
+    %% Client to API connections
+    WA --> AG
+    MA --> AG
+    AG --> COGN
+
+    %% API to Services connections
+    AG --> PROF
+    AG --> SKILL
+    AG --> PATH
+    AG --> ANAL
+    AG --> PERS
+    AG --> GOAL
+    AG --> REC
+    AG --> GAME
+
+    %% Services to Queue connections
+    PROF --> SQS
+    SKILL --> SNS
+    PATH --> SNS
+    ANAL --> SQS
+    
+    %% Services to Storage connections
+    PROF --> DDB
+    SKILL --> DDB
+    PATH --> NEP
+    ANAL --> RDS
+    REC --> ES
+    GAME --> DDB
+    
+    %% Analytics connections
+    SAGE --> DDB
+    QUICK --> RDS
+    ATH --> S3
+
+    %% Monitoring connections
+    CW --> Services
+    CT --> API
